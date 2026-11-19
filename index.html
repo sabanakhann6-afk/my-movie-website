@@ -1,35 +1,54 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>/moviehub title>
+<title>MOVIE HUB</title>
+
 <style>
 *{box-sizing:border-box}
 body{
  margin:0;
- background:#101010;
+ background:#090d18;
  color:white;
  font-family:Arial,sans-serif;
 }
 header{
- background:#e50914;
- padding:20px;
+ background:#151c2c;
+ padding:25px 12px;
  text-align:center;
- font-size:25px;
+ border-bottom:3px solid red;
+}
+.logo{
+ font-size:32px;
  font-weight:bold;
+ color:#ff303b;
 }
-.search{
- padding:15px;
- text-align:center;
-}
-input{
- padding:13px;
+header p{color:#ccc}
+#search{
  width:90%;
- max-width:400px;
- border-radius:8px;
- border:none;
+ max-width:500px;
+ padding:14px;
+ border:0;
+ border-radius:25px;
+ font-size:16px;
 }
+nav{
+ display:flex;
+ overflow-x:auto;
+ gap:10px;
+ padding:15px;
+}
+nav button{
+ background:#222c40;
+ color:white;
+ border:0;
+ padding:12px 18px;
+ border-radius:20px;
+ white-space:nowrap;
+}
+nav button.active{background:#e50914}
 h2{padding:0 15px}
 .movies{
  display:grid;
@@ -37,86 +56,124 @@ h2{padding:0 15px}
  gap:15px;
  padding:15px;
 }
-.movie{
- background:#252525;
- border-radius:10px;
+.card{
+ background:#182236;
+ border-radius:12px;
  overflow:hidden;
- text-align:center;
- padding-bottom:15px;
+ padding-bottom:12px;
 }
 .poster{
- height:180px;
+ height:190px;
  display:flex;
  align-items:center;
  justify-content:center;
- background:linear-gradient(135deg,#541313,#111);
- font-size:45px;
+ font-size:55px;
+ background:linear-gradient(135deg,#421c40,#b52d40);
 }
-.movie h3{font-size:16px}
-button{
+.card h3{padding:0 10px}
+.card p{padding:0 10px;color:#bbb}
+.card a{
+ display:block;
+ margin:10px;
+ padding:11px;
  background:#e50914;
  color:white;
- border:0;
- padding:10px 18px;
- border-radius:6px;
+ text-align:center;
+ text-decoration:none;
+ border-radius:7px;
 }
 footer{
  text-align:center;
  padding:25px;
  color:#aaa;
 }
+@media(min-width:700px){
+ .movies{grid-template-columns:repeat(4,1fr)}
+ .poster{height:260px}
+}
 </style>
 </head>
+
 <body>
 
-<header>🎬MOVIEHUB </header>
+<header>
+ <div class="logo">🎬 MOVIE HUB</div>
+ <p>Bollywood | Hollywood | Drama | Web Series</p>
+ <input id="search" placeholder="🔍 Search Movies...">
+</header>
 
-<div class="search">
-<input id="search" placeholder="Search Movies..." oninput="findMovies()">
-</div>
+<nav>
+ <button class="active" data-cat="सभी">सभी</button>
+ <button data-cat="Bollywood">Bollywood</button>
+ <button data-cat="Hollywood">Hollywood</button>
+ <button data-cat="Drama">Drama</button>
+ <button data-cat="Web Series">Web Series</button>
+</nav>
 
-<h2>Latest Movies</h2>
-
-<div class="movies" id="movies">
-
-<div class="movie">
-<div class="poster">🎥</div>
-<h3>My First Movie</h3>
-<button onclick="alert('Movie coming soon!')">Watch Now</button>
-</div>
-
-<div class="movie">
-<div class="poster">🍿</div>
-<h3>My Second Movie</h3>
-<button onclick="alert('Movie coming soon!')">Watch Now</button>
-</div>
-
-<div class="movie">
-<div class="poster">🎞️</div>
-<h3>My Third Movie</h3>
-<button onclick="alert('Movie coming soon!')">Watch Now</button>
-</div>
-
-<div class="movie">
-<div class="poster">⭐</div>
-<h3>My Fourth Movie</h3>
-<button onclick="alert('Movie coming soon!')">Watch Now</button>
-</div>
-
-</div>
+<h2>🔥 Popular Movies & Series</h2>
+<div class="movies" id="movies"></div>
 
 <footer>
-<p>Welcome to My Movie World</p>
-<p>© 2026 My Movie Website</p>
+ <h3>🎬 MOVIE HUB</h3>
+ <p>Your Entertainment Destination</p>
+ <p>© 2026 MOVIE HUB</p>
+ <p>केवल कानूनी स्ट्रीमिंग लिंक।</p>
 </footer>
 
 <script>
-function findMovies(){
- let q=document.getElementById('search').value.toLowerCase();
- document.querySelectorAll('.movie').forEach(m=>{
- m.style.display=m.innerText.toLowerCase().includes(q)?'block':'none';
- });
+const movieList=[
+ {name:"दंगल",type:"Bollywood",year:"2016",icon:"🎬"},
+ {name:"3 Idiots",type:"Bollywood",year:"2009",icon:"🎓"},
+ {name:"Interstellar",type:"Hollywood",year:"2014",icon:"🚀"},
+ {name:"The Dark Knight",type:"Hollywood",year:"2008",icon:"🦇"},
+ {name:"पंचायत",type:"Web Series",year:"2020",icon:"🏡"},
+ {name:"Scam 1992",type:"Drama",year:"2020",icon:"📺"},
+ {name:"Taare Zameen Par",type:"Bollywood",year:"2007",icon:"⭐"},
+ {name:"Avatar",type:"Hollywood",year:"2009",icon:"🌌"}
+];
+
+const movies=document.getElementById("movies");
+const search=document.getElementById("search");
+let category="सभी";
+
+function showMovies(){
+ const q=search.value.toLowerCase();
+
+ const filtered=movieList.filter(m=>
+ (category==="सभी"||m.type===category)&&
+ m.name.toLowerCase().includes(q)
+ );
+
+ movies.innerHTML=filtered.map(m=>`
+ <div class="card">
+ <div class="poster">${m.icon}</div>
+ <h3>${m.name}</h3>
+ <p>${m.type} • ${m.year}</p>
+ <a href="https://www.justwatch.com/in/search?q=${encodeURIComponent(m.name)}"
+ target="_blank" rel="noopener">
+ कानूनी रूप से देखें
+ </a>
+ </div>
+ `).join("");
+
+ if(!filtered.length){
+ movies.innerHTML="<p>कोई मूवी नहीं मिली।</p>";
+ }
 }
+
+search.addEventListener("input",showMovies);
+
+document.querySelectorAll("nav button").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+ category=btn.dataset.cat;
+ document.querySelectorAll("nav button").forEach(b=>
+ b.classList.remove("active"));
+ btn.classList.add("active");
+ showMovies();
+ });
+});
+
+showMovies();
 </script>
 
 </body>
